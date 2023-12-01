@@ -5,7 +5,7 @@ ERC20 tokens cross-chain bridging scripts.
 This repository contains the scripts and configuration for L1-L2 networks to facilitate in bridging tokens from L2 to L1
 and vice versa.
 
-The conde is written on Python 3.10.
+The code is written on Python 3.10.
 
 Current implementation provides CLI workflow to deposit and withdraw tokens between Polygon and Ethereum networks.
 During deposit, a specified amount of tokens will be locked on a Polygon bridge contract, and a corresponding amount of
@@ -14,8 +14,8 @@ burnt on Ethereum, and a corresponding amount of original tokens will be release
 
 ## Configuration
 Depending on testnet or mainnet usage, the configuration is written in their corresponding files:
-- `scripts/polygon2eth/config_mainnet.json`
-- `scripts/polygon2eth/config_testnet.json`
+- `scripts/polygon-eth/config_mainnet.json`
+- `scripts/polygon-eth/config_testnet.json`
 
 Before running the script, copy one of the specified configuration files into `config.json`, or create one with own set
 of contract addresses.
@@ -97,13 +97,16 @@ Required parameters:
 
 Example:
 ```
-python3 token_transfer.py -o withdraw -a 1000
+python3 token_transfer.py -o withdraw -a 500
 ```
 
 The output will be similar to the following one:
 ```
 Account address: 0xXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx
-
+Bridged token balance on Ethereum: 1000.0
+Approve tx: 0x949673d53c8b8afadae90896eccb9913f448580ec80e0722fcd4961c88ce464a
+Withdraw on L1 tx (Etherscan): 0x47d2ed89c2396b68cee1c100b39b4b4ec5833ed675bd69fa08fac3982fd780f0
+Withdraw has been initiated, check balances in about half an hour or more
 ```
 
 
@@ -115,13 +118,16 @@ Required parameters:
 
 Example:
 ```
-python3 token_transfer.py -o withdraw -a 1000 -d 0xYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYy
+python3 token_transfer.py -o withdraw -a 500 -d 0xYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYy
 ```
 
 The output will be similar to the following one:
 ```
 Account address: 0xXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx
-
+Bridged token balance on Ethereum: 500.0
+Approve tx: 0x9c3d3613bca834e52775bb300371e5e3dbc29f0fdfd550775d8a8cacfe32f5db
+Withdraw on L1 tx (Etherscan): 0x8df271859a812aab13c575aa928f11bdee51899dbf23b2b9472d6f085689b297
+Withdraw has been initiated, check balances in about half an hour or more
 ```
 
 ### Finalize L1 deposits

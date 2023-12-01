@@ -285,6 +285,7 @@ elif operation == "withdraw":
             withdraw(fx_erc20_root_tunnel_contract, amount, account_address)
         else:
             withdraw(fx_erc20_root_tunnel_contract, amount, destination)
+        print("Withdraw has been initiated, check balances in about half an hour or more")
     else:
         print("Amount is incorrect")
         sys.exit(1)
