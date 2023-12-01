@@ -301,6 +301,7 @@ elif operation == "balances":
 
 # Finalize deposits on L1
 elif operation == "finalize_l1_deposits":
+    print("Finalizing outstanding L1 deposits")
     receive_all_messages_l1(fx_erc20_root_tunnel_contract, fx_erc20_child_tunnel_contract, w3_l1)
 
 # Undefined operation, output help

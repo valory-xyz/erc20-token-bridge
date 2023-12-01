@@ -62,7 +62,9 @@ Deposit on L2 tx (Polygonscan): 0x58d0a0480a029b82281440e5e3ae13095f65462b42cbbd
 Waiting for the proofs to finalize tx on L1. Next check is in 5 minutes...
 ...
 Waiting for the proofs to finalize tx on L1. Next check is in 5 minutes...
-
+Processing input data from L2 to L1 tx (Polygonscan): 0xd5b3cbdf55a0419f5f96551545661b14e563f9874520561c1a9e261672ea7906
+Root ERC20 contract to process tokens received on L1 tx (Etherscan): 0x5499f827cd8e23fbdf70cba920cb88f7a6ee67483d273310cd45d8038a36d422
+Deposit has been completed
 ```
 
 ### Deposit tokens from Polygon to Ethereum where the receiver address is different from the sender one
@@ -144,5 +146,7 @@ python3 token_transfer.py -o finalize_l1_deposits
 The output will be similar to the following one:
 ```
 Account address: 0xXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx
-
+Finalizing outstanding L1 deposits
+Processing input data from L2 to L1 tx (Polygonscan): 0xd5b3cbdf55a0419f5f96551545661b14e563f9874520561c1a9e261672ea7906
+Root ERC20 contract to process tokens received on L1 tx (Etherscan): 0x5499f827cd8e23fbdf70cba920cb88f7a6ee67483d273310cd45d8038a36d422
 ```
