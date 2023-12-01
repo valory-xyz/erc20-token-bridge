@@ -1,18 +1,18 @@
 {
-  "from_block_l1": 10049055,
-  "from_block_l2": 42437492,
+  "from_block_l1": 10139758,
+  "from_block_l2": 43061846,
   "proof_generator_url": "https://proof-generator.polygon.technology/api/v1/mumbai/exit-payload/",
   "alchemy_url_eth": "https://eth-goerli.g.alchemy.com/v2/",
   "alchemy_url_polygon": "https://polygon-mumbai.g.alchemy.com/v2/",
   "ledger": false,
   "url_api_eth": "https://api-goerli.etherscan.io",
   "url_api_polygon": "https://api-testnet.polygonscan.com",
-  "lp_token_address": "0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994",
-  "abi_lp_token_address": "0xeB49bE5DF00F74bd240DE4535DDe6Bc89CEfb994",
-  "bridged_erc20_address": "0x88e4ad16Bd4953Bbe74589942b368969037a7d81",
-  "abi_bridged_erc20_address": "0x6D69adC0EB872c962AcA1224AC40B58Bc03f97D5",
-  "fx_erc20_child_tunnel_address": "0x1d333b46dB6e8FFd271b6C2D2B254868BD9A2dbd",
-  "abi_fx_erc20_child_tunnel_address": "0x95dA0F8C3eC5D40209f0EF1ED5E61deD28307d8d",
-  "fx_erc20_root_tunnel_address": "0x1479f01AbdC9b33e6a40F4b03dD38521e3feF98e",
-  "abi_fx_erc20_root_tunnel_address": "0xb1ae1Ab21f872bCD17f706Ee73327fB58e9A0Da6"
+  "lp_token_address": "0x93Cd3f6DcE64d67f4420939865A00aC89776D4b5",
+  "abi_lp_token_address": "0x93Cd3f6DcE64d67f4420939865A00aC89776D4b5",
+  "bridged_erc20_address": "0x0CF8ad7AD779157a253964036af0e95f625EA27c",
+  "abi_bridged_erc20_address": "0x0CF8ad7AD779157a253964036af0e95f625EA27c",
+  "fx_erc20_child_tunnel_address": "0x5b5C7BA8424e6B48f92Ac02980FFc2531c3196DF",
+  "abi_fx_erc20_child_tunnel_address": "0x5b5C7BA8424e6B48f92Ac02980FFc2531c3196DF",
+  "fx_erc20_root_tunnel_address": "0x7E335396a9804097Fd7c04F8b3adc314Ca9398A0",
+  "abi_fx_erc20_root_tunnel_address": "0x7E335396a9804097Fd7c04F8b3adc314Ca9398A0"
 }

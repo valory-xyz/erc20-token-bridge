@@ -146,7 +146,7 @@ def withdraw(contract, amount, to_address):
     return tx_hash
 
 
-def receive_message_l1(tx_hash, fx_erc20_root_tunnel_contract, w3):
+def receive_message_l1(tx_hash, fx_erc20_root_tunnel_contract, w3, exit_on_error):
     url = f"{proof_generator_url}{tx_hash}?eventSignature={msg_hash_topic}"
 
     try:
@@ -164,14 +164,16 @@ def receive_message_l1(tx_hash, fx_erc20_root_tunnel_contract, w3):
                     'nonce': nonce
                 })
 
-                print("Processing input data from L2 to L1 tx (Etherscan):", tx_hash)
+                print("Processing input data from L2 to L1 tx (Polygonscan):", tx_hash)
 
                 (tx_hash, status) = send_tx("Root ERC20 contract to process tokens received on L1 tx (Etherscan):", tx, w3)
                 if (status == 1):
                     return True
                 else:
                     print("Receive transaction failed on L1 tx (Etherscan)", tx_hash)
-                    sys.exit()
+                    # Exit on tx error if it is a single L2 to L1 transfer in a while loop, otherwise just skip
+                    if exit_on_error:
+                        sys.exit(1)
             except:
                 # Skip already processed tx
                 print("Payload processing on L1 failed")
@@ -190,7 +192,7 @@ def receive_all_messages_l1(fx_erc20_root_tunnel_contract, fx_erc20_child_tunnel
     # Traverse all entries
     for entry in entries:
         tx_hash = "0x" + binascii.hexlify(entry['transactionHash']).decode("utf-8")
-        receive_message(tx_hash, fx_erc20_root_tunnel_contract, w3)
+        receive_message_l1(tx_hash, fx_erc20_root_tunnel_contract, w3, False)
 
 
 # Distinguish between ledger or regular EOA
@@ -235,7 +237,7 @@ for opt, arg in opts:
         print("\tALCHEMY_API_KEY_ETH, ALCHEMY_API_KEY_POLYGON, ETHERSCAN_API_KEY, POLYGONSCAN_API_KEY, [PRIVATE_KEY]")
         print("\n\tLedger note: This version of the script uses the default ledger derivation path (accounts[0])")
         print("\tModify the code to account for your ledger derivation path, if needed")
-        sys.exit()
+        sys.exit(0)
     elif opt in ("-o", "--operation"):
         operation = arg
     elif opt in ("-a", "--amount"):
@@ -249,10 +251,10 @@ print("Account address:", account_address)
 if operation == "deposit":
     if amount > 0:
         balance = lp_token_contract.functions.balanceOf(account_address).call()
-        print("Account balance:", balance)
+        print("Token balance on Polygon:", float(balance) / 10**18)
         if (balance < amount):
             print("Insufficient balance")
-            sys.exit()
+            sys.exit(1)
         if (destination == ""):
             tx_hash = deposit(fx_erc20_child_tunnel_contract, amount, account_address)
         else:
@@ -260,39 +262,41 @@ if operation == "deposit":
 
         # Wait for the proofs to finalize tx on L1
         while True:
-            result = receive_message_l1(tx_hash, fx_erc20_root_tunnel_contract, w3_l1)
+            result = receive_message_l1(tx_hash, fx_erc20_root_tunnel_contract, w3_l1, True)
             if not result:
-                print("Waiting for the proofs to finalize tx on L1. Next check in 5 minutes...")
+                print("Waiting for the proofs to finalize tx on L1. Next check is in 5 minutes...")
                 time.sleep(300)
             else:
                 break
         print("Deposit has been completed")
     else:
         print("Amount is incorrect")
-        sys.exit()
+        sys.exit(1)
 
 # Withdraw
 elif operation == "withdraw":
     if amount > 0:
         balance = bridged_erc20_contract.functions.balanceOf(account_address).call()
-        print("Account balance:", balance)
+        print("Bridged token balance on Ethereum:", float(balance) / 10**18)
         if (balance < amount):
             print("Insufficient balance")
-            sys.exit()
+            sys.exit(1)
         if (destination == ""):
             withdraw(fx_erc20_root_tunnel_contract, amount, account_address)
         else:
             withdraw(fx_erc20_root_tunnel_contract, amount, destination)
     else:
         print("Amount is incorrect")
-        sys.exit()
+        sys.exit(1)
 
 # Output balances
 elif operation == "balances":
     balance = lp_token_contract.functions.balanceOf(account_address).call()
-    print("Balance of LP token on Polygon:", balance)
+    balance = float(balance) / 10**18
+    print("Token balance on Polygon:", balance)
     balance = bridged_erc20_contract.functions.balanceOf(account_address).call()
-    print("Balance of bridged token on Ethereum:", balance)
+    balance = float(balance) / 10**18
+    print("Bridged token balance on Ethereum:", balance)
 
 # Finalize deposits on L1
 elif operation == "finalize_l1_deposits":
@@ -307,4 +311,4 @@ else:
     print("\tALCHEMY_API_KEY_ETH, ALCHEMY_API_KEY_POLYGON, ETHERSCAN_API_KEY, POLYGONSCAN_API_KEY, [PRIVATE_KEY]")
     print("\n\tLedger note: This version of the script uses the default ledger derivation path (accounts[0])")
     print("\tModify the code to account for your ledger derivation path, if needed")
-    sys.exit()
+    sys.exit(1)
