@@ -34,11 +34,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-ALCHEMY_API_KEY_ETH = os.getenv("ALCHEMY_API_KEY_ETH")
-ALCHEMY_API_KEY_POLYGON = os.getenv("ALCHEMY_API_KEY_POLYGON")
-ETHERSCAN_API_KEY = os.getenv("ETHERSCAN_API_KEY")
-POLYGONSCAN_API_KEY = os.getenv("POLYGONSCAN_API_KEY")
-PRIVATE_KEY = os.getenv("PRIVATE_KEY")
+ALCHEMY_API_KEY_ETH = os.environ.get("ALCHEMY_API_KEY_ETH")
+ALCHEMY_API_KEY_POLYGON = os.environ.get("ALCHEMY_API_KEY_POLYGON")
+ETHERSCAN_API_KEY = os.environ.get("ETHERSCAN_API_KEY")
+POLYGONSCAN_API_KEY = os.environ.get("POLYGONSCAN_API_KEY")
+PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
 
 # Get the config JSON
 with open("config.json") as f:
