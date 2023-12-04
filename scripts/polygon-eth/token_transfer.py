@@ -108,45 +108,73 @@ def allowance_check_and_approve(contract, w3, token, amount):
         send_tx("Approve tx:", tx, w3)
 
 # Deposit on L2
-def deposit(contract, amount, to_address):
-    allowance_check_and_approve(contract, w3_l2, lp_token_contract, amount)
+def deposit(amount, to_address):
+    allowance_check_and_approve(fx_erc20_child_tunnel_contract, w3_l2, lp_token_contract, amount)
 
     nonce = w3_l2.eth.get_transaction_count(account_address)
     if to_address == account_address:
-        tx = contract.functions.deposit(amount).build_transaction({
-            'gas': 200000,
+        try:
+            gas = fx_erc20_child_tunnel_contract.functions.deposit(amount).estimate_gas()
+        except:
+            gas = 200000
+        tx = fx_erc20_child_tunnel_contract.functions.deposit(amount).build_transaction({
+            'gas': gas,
             'nonce': nonce
         })
     else:
-        tx = contract.functions.depositTo(to_address, amount).build_transaction({
-            'gas': 200000,
+        try:
+            gas = fx_erc20_child_tunnel_contract.functions.depositTo(to_address, amount).estimate_gas()
+        except:
+            gas = 200000
+        tx = fx_erc20_child_tunnel_contract.functions.depositTo(to_address, amount).build_transaction({
+            'gas': gas,
             'nonce': nonce
         })
 
     (tx_hash, status) = send_tx("Deposit on L2 tx (Polygonscan):", tx, w3_l2)
+
+    # Exit with a message if transaction failed
+    if status != 1:
+        print("Deposit transaction failed on L2 tx (Polygonscan)", tx_hash)
+        sys.exit(1)
+
     return tx_hash
 
 # Withdraw from L1
-def withdraw(contract, amount, to_address):
-    allowance_check_and_approve(contract, w3_l1, bridged_erc20_contract, amount)
+def withdraw(amount, to_address):
+    allowance_check_and_approve(fx_erc20_root_tunnel_contract, w3_l1, bridged_erc20_contract, amount)
 
     nonce = w3_l1.eth.get_transaction_count(account_address)
     if to_address == account_address:
-        tx = contract.functions.withdraw(amount).build_transaction({
-            'gas': 200000,
+        try:
+            gas = fx_erc20_root_tunnel_contract.functions.withdraw(amount).estimate_gas()
+        except:
+            gas = 200000
+        tx = fx_erc20_root_tunnel_contract.functions.withdraw(amount).build_transaction({
+            'gas': gas,
             'nonce': nonce
         })
     else:
-        tx = contract.functions.withdrawTo(to_address, amount).build_transaction({
-            'gas': 200000,
+        try:
+            gas = fx_erc20_root_tunnel_contract.functions.withdrawTo(to_address, amount).estimate_gas()
+        except:
+            gas = 200000
+        tx = fx_erc20_root_tunnel_contract.functions.withdrawTo(to_address, amount).build_transaction({
+            'gas': gas,
             'nonce': nonce
         })
 
     (tx_hash, status) = send_tx("Withdraw on L1 tx (Etherscan):", tx, w3_l1)
+
+    # Exit with a message if transaction failed
+    if status != 1:
+        print("Withdraw transaction failed on L1 tx (Etherscan)", tx_hash)
+        sys.exit(1)
+
     return tx_hash
 
 
-def receive_message_l1(tx_hash, fx_erc20_root_tunnel_contract, w3, exit_on_error):
+def receive_message_l1(tx_hash, exit_on_error):
     url = f"{proof_generator_url}{tx_hash}?eventSignature={msg_hash_topic}"
 
     try:
@@ -157,17 +185,16 @@ def receive_message_l1(tx_hash, fx_erc20_root_tunnel_contract, w3, exit_on_error
         if data['message'] == "Payload generation success":
             input_data = data['result']
             # Check if the data hash was already processed, otherwise execute the input tx
-            nonce = w3.eth.get_transaction_count(account_address)
+            nonce = w3_l1.eth.get_transaction_count(account_address)
             try:
                 tx = fx_erc20_root_tunnel_contract.functions.receiveMessage(input_data).build_transaction({
-                    'gas': 500000,
                     'nonce': nonce
                 })
 
                 print("Processing input data from L2 to L1 tx (Polygonscan):", tx_hash)
 
-                (tx_hash, status) = send_tx("Root ERC20 contract to process tokens received on L1 tx (Etherscan):", tx, w3)
-                if (status == 1):
+                (tx_hash, status) = send_tx("Root ERC20 contract to process tokens received on L1 tx (Etherscan):", tx, w3_l1)
+                if status == 1:
                     return True
                 else:
                     print("Receive transaction failed on L1 tx (Etherscan)", tx_hash)
@@ -176,14 +203,13 @@ def receive_message_l1(tx_hash, fx_erc20_root_tunnel_contract, w3, exit_on_error
                         sys.exit(1)
             except:
                 # Skip already processed tx
-                print("Payload processing on L1 failed")
                 return False
         return False
     except:
         print(f"Proof generator response API timeout with error: {requests.exceptions}")
         return False
 
-def receive_all_messages_l1(fx_erc20_root_tunnel_contract, fx_erc20_child_tunnel_contract, w3):
+def receive_all_messages_l1():
     # Get last settled epoch event
     event_filter = fx_erc20_child_tunnel_contract.events.MessageSent.create_filter(fromBlock=from_block_l2, toBlock="latest")
     # Get all entries
@@ -192,7 +218,7 @@ def receive_all_messages_l1(fx_erc20_root_tunnel_contract, fx_erc20_child_tunnel
     # Traverse all entries
     for entry in entries:
         tx_hash = "0x" + binascii.hexlify(entry['transactionHash']).decode("utf-8")
-        receive_message_l1(tx_hash, fx_erc20_root_tunnel_contract, w3, False)
+        receive_message_l1(tx_hash, False)
 
 
 # Distinguish between ledger or regular EOA
@@ -226,7 +252,8 @@ fx_erc20_child_tunnel_contract = w3_l2.eth.contract(address=config['fx_erc20_chi
 operation = ""
 amount = 0
 destination = ""
-# Parse command line arguments
+
+#Parse command line arguments
 opts, args = getopt.getopt(sys.argv[1:], "ho:a:d:", ["operation=","amount=","destination="])
 for opt, arg in opts:
     if opt == "-h":
@@ -256,13 +283,13 @@ if operation == "deposit":
             print("Insufficient balance")
             sys.exit(1)
         if (destination == ""):
-            tx_hash = deposit(fx_erc20_child_tunnel_contract, amount, account_address)
+            tx_hash = deposit(amount, account_address)
         else:
-            tx_hash = deposit(fx_erc20_child_tunnel_contract, amount, destination)
+            tx_hash = deposit(amount, destination)
 
         # Wait for the proofs to finalize tx on L1
         while True:
-            result = receive_message_l1(tx_hash, fx_erc20_root_tunnel_contract, w3_l1, True)
+            result = receive_message_l1(tx_hash, True)
             if not result:
                 print("Waiting for the proofs to finalize tx on L1. Next check is in 5 minutes...")
                 time.sleep(300)
@@ -282,9 +309,9 @@ elif operation == "withdraw":
             print("Insufficient balance")
             sys.exit(1)
         if (destination == ""):
-            withdraw(fx_erc20_root_tunnel_contract, amount, account_address)
+            withdraw(amount, account_address)
         else:
-            withdraw(fx_erc20_root_tunnel_contract, amount, destination)
+            withdraw(amount, destination)
         print("Withdraw has been initiated, check balances in about half an hour or more")
     else:
         print("Amount is incorrect")
@@ -302,7 +329,7 @@ elif operation == "balances":
 # Finalize deposits on L1
 elif operation == "finalize_l1_deposits":
     print("Finalizing outstanding L1 deposits")
-    receive_all_messages_l1(fx_erc20_root_tunnel_contract, fx_erc20_child_tunnel_contract, w3_l1)
+    receive_all_messages_l1()
 
 # Undefined operation, output help
 else:
