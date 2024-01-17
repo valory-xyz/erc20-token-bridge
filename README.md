@@ -1,34 +1,41 @@
 # erc20-token-bridge
-ERC20 tokens cross-chain bridging scripts.
+Script to bridge [50WMATIC-50OLAS](https://polygonscan.com/address/0x62309056c759c36879cde93693e7903bf415e4bc) from Polygon POS to Ethereum, and vice versa.
 
 ## Introduction
-This repository contains the scripts and configuration for L1-L2 networks to facilitate in bridging tokens from L2 to L1
-and vice versa.
+This repository contains the scripts and configuration to facilitate bridging the [50WMATIC-50OLAS](https://polygonscan.com/address/0x62309056c759c36879cde93693e7903bf415e4bc) token between Polygon POS and Ethereum.
 
-The code is written on Python 3.10.
+The code is written in Python 3.10.
 
 Current implementation provides CLI workflow to deposit and withdraw tokens between Polygon and Ethereum networks.
-During deposit, a specified amount of tokens will be locked on a Polygon bridge contract, and a corresponding amount of
-bridged tokens will be minted on Ethereum side. In case of withdraw, a specified amount of bridged tokens will be
-burnt on Ethereum, and a corresponding amount of original tokens will be released (transferred) on Polygon.
+During deposit, a specified amount of tokens will be locked on a [Polygon bridge contract](https://polygonscan.com/address/0x1fe74A08ac89300B102AdCd474C721AE8764E850), and a corresponding amount of [bridged tokens](https://etherscan.io/address/0x06512E620A8317da51a73690A596Aca97287b31D) will be minted on the Ethereum side. In case of withdraw, a specified amount of bridged tokens will be burnt by [a bridge contract on Ethereum](https://etherscan.io/address/0x1737408def992AF04b29C8Ba4BBcD7397B08c930), and a corresponding amount of original tokens will be released (transferred) on Polygon.
 
 ## Configuration
-Depending on testnet or mainnet usage, the configuration is written in their corresponding files:
+Depending on testnets (Goerli<>Mumbai) or mainnet (Ethereum<>Polygon) usage, the configuration is written in their corresponding files:
 - `scripts/polygon-eth/config_mainnet.json`
 - `scripts/polygon-eth/config_testnet.json`
 
-Before running the script, copy one of the specified configuration files into `config.json`, or create one with own set
-of contract addresses.
+Before running the script, copy one of the specified configuration files into `config.json`.
 
 Note that following environment variables need to be exported in order to run the script:
 - `ALCHEMY_API_KEY_ETH`, `ALCHEMY_API_KEY_POLYGON`: alchemy API keys for networks
 - `ETHERSCAN_API_KEY`, `POLYGONSCAN_API_KEY`: scan keys for networks
-- `PRIVATE_KEY`: wallet private key, if regular EOA is used (not ledger)
+
+Also, either use a private key from environment variable by exporting:
+-  `PRIVATE_KEY`: wallet private key, if regular EOA is used (not ledger)
+or, use a hardware wallet, and configure `"ledger": true`  in `config.json`. By default the `account_index` is set to zero, configure if required.
+
+
+## Installation
+
+It is assumed you have installed [Poetry](https://python-poetry.org/). Install dependencies by running:
+```
+poetry install
+```
 
 ## CLI options and examples
 ### Helper
 ```
-python3 token_transfer.py -h
+poetry run token_transfer.py -h
 ```
 
 ### Check balances on both chains
