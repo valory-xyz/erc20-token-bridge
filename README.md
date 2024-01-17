@@ -97,7 +97,7 @@ Required parameters:
 
 Example:
 ```
-python3 token_transfer.py -o deposit -a 1000 -d 0xYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYy
+poetry run scripts/polygon-eth/token_transfer.py -o deposit -a 1000 -d 0xYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYy
 ```
 
 The output will be similar to the following one:
@@ -120,6 +120,10 @@ Waiting for the proofs to finalize tx on L1. Next check is in 5 minutes...
 ...
 Waiting for the proofs to finalize tx on L1. Next check is in 5 minutes...
 Processing input data from L2 to L1 tx (Polygonscan): 0xd5b3cbdf55a0419f5f96551545661b14e563f9874520561c1a9e261672ea7906
+{
+    ...
+}
+Sign on your ledger now ...
 Root ERC20 contract to process tokens received on L1 tx (Etherscan): 0x5499f827cd8e23fbdf70cba920cb88f7a6ee67483d273310cd45d8038a36d422
 Deposit has been completed
 ```
@@ -167,6 +171,7 @@ Withdraw has been initiated, check balances in about half an hour or more
 ```
 
 ### Finalize L1 deposits
+
 This command is useful if L1 deposits were not complete or if the script got interrupted.
 
 Required parameters:
@@ -174,13 +179,18 @@ Required parameters:
 
 Example:
 ```
-python3 token_transfer.py -o finalize_l1_deposits
+poetry run scripts/polygon-eth/token_transfer.py -o finalize_l1_deposits
 ```
 
 The output will be similar to the following one:
 ```
 Account address: 0xXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx
 Finalizing outstanding L1 deposits
-Processing input data from L2 to L1 tx (Polygonscan): 0x63c4b4243c20647bb5e82c746f360b8a336ed9f42a9b319042d39ba320d9aa65
+Checking tx hash: 0xd5b3cbdf55a0419f5f96551545661b14e563f9874520561c1a9e261672ea7906
+Processing input data from L2 to L1 tx (Polygonscan): 0xd5b3cbdf55a0419f5f96551545661b14e563f9874520561c1a9e261672ea7906
+{
+    ...
+}
+Sign on your ledger now ...
 Root ERC20 contract to process tokens received on L1 tx (Etherscan): 0x359a58abea49219b88d4d55abbb27e0fa6b09ab6712d74f4ffd7d28c6de888d2
 ```

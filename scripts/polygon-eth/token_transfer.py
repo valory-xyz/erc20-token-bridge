@@ -202,7 +202,10 @@ def receive_message_l1(tx_hash, exit_on_error):
                 })
 
                 print("Processing input data from L2 to L1 tx (Polygonscan):", tx_hash)
-
+                pretty_tx = json.dumps(tx, indent=4)
+                print(pretty_tx)
+                if config["ledger"]:
+                    print("Sign on your ledger now ...")
                 (tx_hash, status) = send_tx("Root ERC20 contract to process tokens received on L1 tx (Etherscan):", tx, w3_l1)
                 if status == 1:
                     return True
@@ -219,7 +222,7 @@ def receive_message_l1(tx_hash, exit_on_error):
         print(f"Proof generator response API timeout with error: {requests.exceptions}")
         return False
 
-def receive_all_messages_l1():
+def receive_all_messages_l1(account: str):
     # Get last settled epoch event
     event_filter = fx_erc20_child_tunnel_contract.events.MessageSent.create_filter(fromBlock=from_block_l2, toBlock="latest")
     # Get all entries
@@ -228,6 +231,10 @@ def receive_all_messages_l1():
     # Traverse all entries
     for entry in entries:
         tx_hash = "0x" + binascii.hexlify(entry['transactionHash']).decode("utf-8")
+        message = entry["args"]["message"].hex()
+        if account.replace("0x", "").lower() not in message.lower():
+            continue
+        print(f"Checking tx hash: {tx_hash}")
         receive_message_l1(tx_hash, False)
 
 
@@ -339,7 +346,7 @@ elif operation == "balances":
 # Finalize deposits on L1
 elif operation == "finalize_l1_deposits":
     print("Finalizing outstanding L1 deposits")
-    receive_all_messages_l1()
+    receive_all_messages_l1(account_address)
 
 # Undefined operation, output help
 else:
