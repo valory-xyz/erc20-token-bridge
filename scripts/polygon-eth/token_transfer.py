@@ -226,7 +226,7 @@ if ledger:
     w3_l1.middleware_onion.add(LedgerSignerMiddleware, "ledgereth_middleware")
     w3_l2.middleware_onion.add(LedgerSignerMiddleware, "ledgereth_middleware")
     accounts = get_accounts()
-    account = accounts[0]
+    account = accounts[config['account_index']]
 else:
     account = Account.from_key(PRIVATE_KEY)
     pk_hex = bytearray.fromhex(PRIVATE_KEY)
