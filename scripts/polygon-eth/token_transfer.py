@@ -105,6 +105,11 @@ def allowance_check_and_approve(contract, w3, token, amount):
             'nonce': nonce
         })
 
+        print(f"Approval tx for amount '{amount / 10**18}' and spender '{contract.address}':")
+        pretty_tx = json.dumps(tx, indent=4)
+        print(pretty_tx)
+        if config["ledger"]:
+            print("Sign on your ledger now ...")
         send_tx("Approve tx:", tx, w3)
 
 # Deposit on L2
@@ -131,6 +136,11 @@ def deposit(amount, to_address):
             'nonce': nonce
         })
 
+    print(f"Bridging tx for amount '{amount / 10**18}' and Ethereum address receiver '{to_address}':")
+    pretty_tx = json.dumps(tx, indent=4)
+    print(pretty_tx)
+    if config["ledger"]:
+        print("Sign on your ledger now ...")
     (tx_hash, status) = send_tx("Deposit on L2 tx (Polygonscan):", tx, w3_l2)
 
     # Exit with a message if transaction failed
@@ -262,8 +272,8 @@ for opt, arg in opts:
         print("\tThis command deposits 1 ether worth of LP token from L2 to L1")
         print("\n\tDefine required environment before running the script:")
         print("\tALCHEMY_API_KEY_ETH, ALCHEMY_API_KEY_POLYGON, ETHERSCAN_API_KEY, POLYGONSCAN_API_KEY, [PRIVATE_KEY]")
-        print("\n\tLedger note: This version of the script uses the default ledger derivation path (accounts[0])")
-        print("\tModify the code to account for your ledger derivation path, if needed")
+        print("\n\tLedger note: This version of the script uses the configured ledger derivation path (accounts[0] by default)")
+        print("\tModify the configuration to account for your ledger derivation path, if needed")
         sys.exit(0)
     elif opt in ("-o", "--operation"):
         operation = arg

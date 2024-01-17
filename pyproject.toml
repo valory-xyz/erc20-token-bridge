@@ -10,6 +10,7 @@ packages = [{include = "erc20_token_bridge"}]
 python = "^3.10"
 web3 = "^6.14.0"
 ledgereth = "^0.9.1"
+python-dotenv = "^1.0.0"
 
 
 [build-system]
