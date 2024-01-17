@@ -1,6 +1,9 @@
 # erc20-token-bridge
 Script to bridge [50WMATIC-50OLAS](https://polygonscan.com/address/0x62309056c759c36879cde93693e7903bf415e4bc) from Polygon POS to Ethereum, and vice versa.
 
+> :warning: **Warning** <br />
+> No warranties are provided. Check license for details. Proceed at your own risk. All funds at risk!
+
 ## Introduction
 This repository contains the scripts and configuration to facilitate bridging the [50WMATIC-50OLAS](https://polygonscan.com/address/0x62309056c759c36879cde93693e7903bf415e4bc) token between Polygon POS and Ethereum.
 
@@ -136,14 +139,22 @@ Required parameters:
 
 Example:
 ```
-python3 token_transfer.py -o withdraw -a 500
+poetry run scripts/polygon-eth/token_transfer.py -o withdraw -a 1
 ```
 
 The output will be similar to the following one:
 ```
 Account address: 0xXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx
-Bridged token balance on Ethereum: 1000.0
+Bridged token balance on Ethereum: 1.0
+Approval tx for amount '1.0' and spender '0x1737408def992AF04b29C8Ba4BBcD7397B08c930':
+{
+    ...
+}
 Approve tx: 0x949673d53c8b8afadae90896eccb9913f448580ec80e0722fcd4961c88ce464a
+Bridging tx for amount '1.0' and Polygon address receiver '0xXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx':
+{
+    ...
+}
 Withdraw on L1 tx (Etherscan): 0x47d2ed89c2396b68cee1c100b39b4b4ec5833ed675bd69fa08fac3982fd780f0
 Withdraw has been initiated, check balances in about half an hour or more
 ```
@@ -158,14 +169,22 @@ Required parameters:
 
 Example:
 ```
-python3 token_transfer.py -o withdraw -a 500 -d 0xYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYy
+poetry run scripts/polygon-eth/token_transfer.py -o withdraw -a 1 -d 0xYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYy
 ```
 
 The output will be similar to the following one:
 ```
 Account address: 0xXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx
-Bridged token balance on Ethereum: 500.0
+Bridged token balance on Ethereum: 1.0
+Approval tx for amount '1.0' and spender '0x1737408def992AF04b29C8Ba4BBcD7397B08c930':
+{
+    ...
+}
 Approve tx: 0x9c3d3613bca834e52775bb300371e5e3dbc29f0fdfd550775d8a8cacfe32f5db
+Bridging tx for amount '1.0' and Polygon address receiver '0xYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYyYy':
+{
+    ...
+}
 Withdraw on L1 tx (Etherscan): 0x8df271859a812aab13c575aa928f11bdee51899dbf23b2b9472d6f085689b297
 Withdraw has been initiated, check balances in about half an hour or more
 ```

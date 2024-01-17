@@ -174,6 +174,11 @@ def withdraw(amount, to_address):
             'nonce': nonce
         })
 
+    print(f"Bridging tx for amount '{amount / 10**18}' and Polygon address receiver '{to_address}':")
+    pretty_tx = json.dumps(tx, indent=4)
+    print(pretty_tx)
+    if config["ledger"]:
+        print("Sign on your ledger now ...")
     (tx_hash, status) = send_tx("Withdraw on L1 tx (Etherscan):", tx, w3_l1)
 
     # Exit with a message if transaction failed
