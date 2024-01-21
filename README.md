@@ -7,10 +7,12 @@ Script to bridge [50WMATIC-50OLAS](https://polygonscan.com/address/0x62309056c75
 ## Introduction
 This repository contains the scripts and configuration to facilitate bridging the [50WMATIC-50OLAS](https://polygonscan.com/address/0x62309056c759c36879cde93693e7903bf415e4bc) token between Polygon POS and Ethereum.
 
-The code is written in Python 3.10.
-
 Current implementation provides CLI workflow to deposit and withdraw tokens between Polygon and Ethereum networks.
 During deposit, a specified amount of tokens will be locked on a [Polygon bridge contract](https://polygonscan.com/address/0x1fe74A08ac89300B102AdCd474C721AE8764E850), and a corresponding amount of [bridged tokens](https://etherscan.io/address/0x06512E620A8317da51a73690A596Aca97287b31D) will be minted on the Ethereum side. In case of withdraw, a specified amount of bridged tokens will be burnt by [a bridge contract on Ethereum](https://etherscan.io/address/0x1737408def992AF04b29C8Ba4BBcD7397B08c930), and a corresponding amount of original tokens will be released (transferred) on Polygon.
+
+## System Requirements
+
+You must have [Python 3.10](https://www.python.org/downloads/) and [Poetry](https://python-poetry.org/) installed.
 
 ## Configuration
 Depending on testnets (Goerli<>Mumbai) or mainnet (Ethereum<>Polygon) usage, the configuration is written in their corresponding files:
@@ -34,7 +36,7 @@ Or, use a hardware wallet, and configure `"ledger": true`  in `config.json`. By 
 
 ## Installation
 
-It is assumed you have installed [Poetry](https://python-poetry.org/). Install dependencies by running:
+It is assumed you have installed the system requirements listed above. Install dependencies by running:
 ```
 poetry install
 ```
