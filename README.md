@@ -42,6 +42,10 @@ poetry install
 ```
 
 ## CLI options and examples
+
+> :warning: **Warning** <br />
+> Bridging from Polygon to Ethereum can take several hours. Bridging from Ethereum to Polygon should take on the order of minutes.
+
 ### Helper
 ```
 poetry run scripts/polygon-eth/token_transfer.py -h
@@ -59,7 +63,11 @@ Token balance on Polygon: 1000000.0
 Bridged token balance on Ethereum: 0.0
 ```
 
-### Deposit tokens from Polygon to Ethereum where the receiver address matches the sender one
+### Bridging tokens from Polygon to Ethereum where the receiver address matches the sender one
+
+> :warning: **Warning** <br />
+> It is recommended to start bridging a small amount first to build confidence in the process.
+
 Required parameters:
 - `-o deposit`: deposit operation;
 - `-a amount_tokens`: amount of tokens in ether value.
@@ -93,7 +101,10 @@ Root ERC20 contract to process tokens received on L1 tx (Etherscan): 0xe033a925b
 Deposit has been completed
 ```
 
-### Deposit tokens from Polygon to Ethereum where the receiver address is different from the sender one
+### Bridging tokens from Polygon to Ethereum where the receiver address is different from the sender one
+
+> :warning: **Warning** <br />
+> It is recommended to start bridging a small amount first to build confidence in the process.
 
 Required parameters:
 - `-o deposit`: deposit operation;
@@ -133,7 +144,10 @@ Root ERC20 contract to process tokens received on L1 tx (Etherscan): 0x5499f827c
 Deposit has been completed
 ```
 
-### Withdraw tokens from Ethereum to Polygon where the receiver address matches the sender one
+### Bridging tokens from Ethereum to Polygon where the receiver address matches the sender one
+
+> :warning: **Warning** <br />
+> It is recommended to start bridging a small amount first to build confidence in the process.
 
 Required parameters:
 - `-o withdraw`: withdraw operation;
@@ -162,7 +176,10 @@ Withdraw has been initiated, check balances in about half an hour or more
 ```
 
 
-### Withdraw tokens from Ethereum to Polygon where the receiver address is different from the sender one
+### Bridging tokens from Ethereum to Polygon where the receiver address is different from the sender one
+
+> :warning: **Warning** <br />
+> It is recommended to start bridging a small amount first to build confidence in the process.
 
 Required parameters:
 - `-o withdraw`: withdraw operation;
@@ -191,9 +208,9 @@ Withdraw on L1 tx (Etherscan): 0x8df271859a812aab13c575aa928f11bdee51899dbf23b2b
 Withdraw has been initiated, check balances in about half an hour or more
 ```
 
-### Finalize L1 deposits
+### Finalize bridging to Ethereum
 
-This command is useful if L1 deposits were not complete or if the script got interrupted.
+This command is useful if Ethereum (L1) deposits were not complete or if the script got interrupted.
 
 Required parameters:
 - `-o finalize_l1_deposits`: finalize L1 deposits operation.
